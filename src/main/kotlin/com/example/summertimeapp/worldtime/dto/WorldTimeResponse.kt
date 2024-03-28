@@ -1,22 +1,24 @@
 package com.example.summertimeapp.worldtime.dto
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.annotation.JsonNaming
 import java.time.ZonedDateTime
 
-// TODO: change response string format
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class WorldTimeResponse(
     val abbreviation: String?,
-    val client_ip: String?,
+    val clientIp: String?,
     val datetime: ZonedDateTime?,
-    val day_of_week: Int,
-    val day_of_year: Int,
+    val dayOfWeek: Int,
+    val dayOfYear: Int,
     val dst: Boolean,
-    val dst_from: ZonedDateTime?,
-    val dst_offset: Int,
-    val dst_until: ZonedDateTime?,
-    val raw_offset: Int,
+    val dstFrom: ZonedDateTime?,
+    val dstOffset: Int,
+    val dstUntil: ZonedDateTime?,
+    val rawOffset: Int,
     val timezone: String,
     val unixtime: Int,
-    val utc_datetime: ZonedDateTime,
-    val utc_offset: String,
-    val week_number: Int
+    val utcDatetime: ZonedDateTime,
+    val utcOffset: String,
+    val weekNumber: Int
 )
