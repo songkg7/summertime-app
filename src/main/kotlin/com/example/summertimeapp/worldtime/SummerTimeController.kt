@@ -1,6 +1,8 @@
 package com.example.summertimeapp.worldtime
 
 import com.example.summertimeapp.log
+import com.example.summertimeapp.worldtime.dto.SummerTimeRequest
+import com.example.summertimeapp.worldtime.dto.SummerTimeResponse
 import com.example.summertimeapp.worldtime.dto.WorldTimeResponse
 import com.example.summertimeapp.worldtime.service.WorldTimeService
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,5 +20,15 @@ class SummerTimeController(
         return worldTimeService.getTime(continent, city)
     }
 
-    // TODO: change ZonedDateTime to local time with summertime
+    @GetMapping("/summertime")
+    fun convertSummerTime(request: SummerTimeRequest): SummerTimeResponse {
+        log.info { "Converting time to summer time" }
+        worldTimeService.convertSummerTime(
+            request.continent,
+            request.city,
+            request.time
+        ).let {
+            return SummerTimeResponse(it)
+        }
+    }
 }

@@ -11,7 +11,7 @@ data class WorldTimeResponse(
     val datetime: ZonedDateTime?,
     val dayOfWeek: Int,
     val dayOfYear: Int,
-    val dst: Boolean,
+    val dst: Boolean, // summerTime
     val dstFrom: ZonedDateTime?,
     val dstOffset: Int,
     val dstUntil: ZonedDateTime?,
