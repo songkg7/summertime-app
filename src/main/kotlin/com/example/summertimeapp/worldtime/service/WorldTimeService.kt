@@ -11,25 +11,22 @@ import java.time.ZonedDateTime
 class WorldTimeService(
     private val worldTimeClient: WorldTimeClient,
 ) {
-    fun getTime(continent: String, city: String) = worldTimeClient.getTime(continent, city)
+    fun request(continent: String, city: String) = worldTimeClient.getTime(continent, city)
     fun convertSummerTime(continent: String, city: String, time: LocalDateTime): LocalDateTime {
-        val timezone = ZoneId.of("$continent/$city")
-
-        val worldTimeResponse = getTime(continent, city)
+        val worldTimeResponse = request(continent, city)
         if (!worldTimeResponse.dst) {
-            return time;
+            return time
         }
 
-        require(isValidRquestTime(time, timezone, worldTimeResponse)) {
+        require(isValidRequestTime(time, worldTimeResponse)) {
             "The requested time is not in the current conversion time zone."
         }
 
-        return time.plusSeconds(worldTimeResponse.dstOffset.toLong());
+        return time.plusSeconds(worldTimeResponse.dstOffset.toLong())
     }
 
-    private fun isValidRquestTime(
+    private fun isValidRequestTime(
         time: LocalDateTime,
-        timezone: ZoneId?,
-        worldTimeResponse: WorldTimeResponse,
-    ) = ZonedDateTime.of(time, timezone) in worldTimeResponse.dstFrom!!..worldTimeResponse.dstUntil!!
+        response: WorldTimeResponse,
+    ) = ZonedDateTime.of(time, ZoneId.of(response.timezone)) in response.dstFrom!!..response.dstUntil!!
 }

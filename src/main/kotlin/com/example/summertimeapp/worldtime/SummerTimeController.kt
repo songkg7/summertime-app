@@ -17,7 +17,7 @@ class SummerTimeController(
     @GetMapping("/time/{continent}/{city}")
     fun getTime(@PathVariable continent: String, @PathVariable city: String): WorldTimeResponse {
         log.info { "Getting time for $continent/$city" }
-        return worldTimeService.getTime(continent, city)
+        return worldTimeService.request(continent, city)
     }
 
     @GetMapping("/summertime")

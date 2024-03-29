@@ -43,6 +43,7 @@ class WorldTimeServiceTest : FreeSpec({
             val timezone = "America/Chicago"
             val summerTimeBuilder = fixture.giveMeBuilder<WorldTimeResponse>()
                 .setExp(WorldTimeResponse::dst, true)
+                .setExp(WorldTimeResponse::timezone, timezone)
                 .setExp(WorldTimeResponse::dstOffset, 3600)
 
             "요청된 시간이 현재 변환가능한 시간대에 포함되어 있는 경우" - {
