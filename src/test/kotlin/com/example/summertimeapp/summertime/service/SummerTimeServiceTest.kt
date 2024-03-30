@@ -1,5 +1,6 @@
-package com.example.summertimeapp.worldtime.service
+package com.example.summertimeapp.summertime.service
 
+import com.example.summertimeapp.summertime.service.SummerTimeService
 import com.example.summertimeapp.worldtime.client.WorldTimeClient
 import com.example.summertimeapp.worldtime.dto.WorldTimeResponse
 import com.navercorp.fixturemonkey.FixtureMonkey
@@ -15,13 +16,13 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-class WorldTimeServiceTest : FreeSpec({
+class SummerTimeServiceTest : FreeSpec({
 
     val fixture = FixtureMonkey.builder()
         .plugin(KotlinPlugin())
         .build()
     val mockClient = mockk<WorldTimeClient>()
-    val service = WorldTimeService(mockClient)
+    val service = SummerTimeService(mockClient)
 
     "convertSummerTime" - {
         "서머타임 기간이 아닐 경우" - {

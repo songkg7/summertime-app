@@ -1,4 +1,4 @@
-package com.example.summertimeapp.worldtime.dto
+package com.example.summertimeapp.summertime.dto
 
 import java.time.LocalDateTime
 

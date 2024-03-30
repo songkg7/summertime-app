@@ -1,4 +1,4 @@
-package com.example.summertimeapp.worldtime.service
+package com.example.summertimeapp.summertime.service
 
 import com.example.summertimeapp.worldtime.client.WorldTimeClient
 import com.example.summertimeapp.worldtime.dto.WorldTimeResponse
@@ -8,7 +8,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Service
-class WorldTimeService(
+class SummerTimeService(
     private val worldTimeClient: WorldTimeClient,
 ) {
     fun request(continent: String, city: String) = worldTimeClient.getTime(continent, city)
