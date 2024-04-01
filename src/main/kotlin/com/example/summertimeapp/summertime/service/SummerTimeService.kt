@@ -1,7 +1,10 @@
 package com.example.summertimeapp.summertime.service
 
+import com.example.summertimeapp.summertime.dto.SummerTimeResponse
 import com.example.summertimeapp.worldtime.client.WorldTimeClient
 import com.example.summertimeapp.worldtime.dto.WorldTimeResponse
+import org.springframework.http.HttpHeaders
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -12,17 +15,20 @@ class SummerTimeService(
     private val worldTimeClient: WorldTimeClient,
 ) {
     fun request(continent: String, city: String) = worldTimeClient.getTime(continent, city)
-    fun convertSummerTime(continent: String, city: String, time: LocalDateTime): LocalDateTime {
+    fun convertSummerTime(continent: String, city: String, time: LocalDateTime): ResponseEntity<SummerTimeResponse> {
         val worldTimeResponse = request(continent, city)
-        if (!worldTimeResponse.dst) {
-            return time
+        val worldTimeBody = worldTimeResponse.body!!
+
+        if (!worldTimeBody.dst) {
+            return ResponseEntity.noContent().build()
         }
 
-        require(isValidRequestTime(time, worldTimeResponse)) {
+        require(isValidRequestTime(time, worldTimeBody)) {
             "The requested time is not in the current conversion time zone."
         }
 
-        return time.plusSeconds(worldTimeResponse.dstOffset.toLong())
+        val result = time.plusSeconds(worldTimeBody.dstOffset.toLong())
+        return ResponseEntity.ok().body(SummerTimeResponse(result))
     }
 
     private fun isValidRequestTime(

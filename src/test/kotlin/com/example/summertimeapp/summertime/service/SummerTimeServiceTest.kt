@@ -1,6 +1,6 @@
 package com.example.summertimeapp.summertime.service
 
-import com.example.summertimeapp.summertime.service.SummerTimeService
+import com.example.summertimeapp.summertime.dto.SummerTimeResponse
 import com.example.summertimeapp.worldtime.client.WorldTimeClient
 import com.example.summertimeapp.worldtime.dto.WorldTimeResponse
 import com.navercorp.fixturemonkey.FixtureMonkey
@@ -12,10 +12,12 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
+import org.springframework.http.ResponseEntity
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
+// FIXME: 테스트 코드의 depth 가 마음에 들지 않음
 class SummerTimeServiceTest : FreeSpec({
 
     val fixture = FixtureMonkey.builder()
@@ -31,11 +33,11 @@ class SummerTimeServiceTest : FreeSpec({
                 val response = fixture.giveMeBuilder<WorldTimeResponse>()
                     .setExp(WorldTimeResponse::dst, false)
                     .sample()
-                every { mockClient.getTime("Europe", "Berlin") } returns response
+                every { mockClient.getTime("Europe", "Berlin") } returns ResponseEntity.ok(response)
 
                 val actual = service.convertSummerTime("Europe", "Berlin", expected)
 
-                actual shouldBe expected
+                actual shouldBe ResponseEntity.noContent().build()
             }
         }
 
@@ -53,11 +55,11 @@ class SummerTimeServiceTest : FreeSpec({
                     .setExp(WorldTimeResponse::dstUntil, ZonedDateTime.of(expected.plusDays(1), ZoneId.of(timezone)))
 
                 "dstOffset 만큼 시간을 더해준다" {
-                    every { mockClient.getTime("America", "Chicago") } returns requestTimeIsBetween.sample()
+                    every { mockClient.getTime("America", "Chicago") } returns ResponseEntity.ok(requestTimeIsBetween.sample())
 
                     val actual = service.convertSummerTime("America", "Chicago", expected)
 
-                    actual shouldBe expected.plusHours(1)
+                    actual.body shouldBe SummerTimeResponse(expected.plusHours(1))
                 }
             }
 
@@ -65,7 +67,7 @@ class SummerTimeServiceTest : FreeSpec({
                 "IllegalArgumentException 을 던진다" {
                     val tooLongAgoTime = LocalDateTime.parse("2000-01-01T00:00:00")
 
-                    every { mockClient.getTime("America", "Chicago") } returns summerTimeBuilder.sample()
+                    every { mockClient.getTime("America", "Chicago") } returns ResponseEntity.ok(summerTimeBuilder.sample())
 
                     shouldThrow<IllegalArgumentException> {
                         service.convertSummerTime("America", "Chicago", tooLongAgoTime)
