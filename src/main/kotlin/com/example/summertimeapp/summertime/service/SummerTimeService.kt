@@ -3,6 +3,7 @@ package com.example.summertimeapp.summertime.service
 import com.example.summertimeapp.summertime.dto.SummerTimeResponse
 import com.example.summertimeapp.worldtime.client.WorldTimeClient
 import com.example.summertimeapp.worldtime.dto.WorldTimeResponse
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -14,21 +15,22 @@ import java.time.ZonedDateTime
 class SummerTimeService(
     private val worldTimeClient: WorldTimeClient,
 ) {
+    // FIXME: self-invocation
+//    @Cacheable(value = ["world-time"], key = "{#continent, #city}")
     fun request(continent: String, city: String) = worldTimeClient.getTime(continent, city)
-    fun convertSummerTime(continent: String, city: String, time: LocalDateTime): ResponseEntity<SummerTimeResponse> {
-        val worldTimeResponse = request(continent, city)
-        val worldTimeBody = worldTimeResponse.body!!
 
-        if (!worldTimeBody.dst) {
-            return ResponseEntity.noContent().build()
+    fun convertSummerTime(continent: String, city: String, time: LocalDateTime): LocalDateTime {
+        val worldTimeResponse = request(continent, city)
+
+        if (!worldTimeResponse.dst) {
+            return time
         }
 
-        require(isValidRequestTime(time, worldTimeBody)) {
+        require(isValidRequestTime(time, worldTimeResponse)) {
             "The requested time is not in the current conversion time zone."
         }
 
-        val result = time.plusSeconds(worldTimeBody.dstOffset.toLong())
-        return ResponseEntity.ok().body(SummerTimeResponse(result))
+        return time.plusSeconds(worldTimeResponse.dstOffset.toLong())
     }
 
     private fun isValidRequestTime(

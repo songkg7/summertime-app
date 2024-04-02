@@ -1,5 +1,3 @@
 spring:
   application:
     name: summertime-app
-  main:
-    allow-bean-definition-overriding: true

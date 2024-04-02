@@ -18,16 +18,18 @@ class SummerTimeController(
     @GetMapping("/time/{continent}/{city}")
     fun getTime(@PathVariable continent: String, @PathVariable city: String): ResponseEntity<WorldTimeResponse> {
         log.info { "Getting time for $continent/$city" }
-        return summerTimeService.request(continent, city)
+        return ResponseEntity.ok(summerTimeService.request(continent, city))
     }
 
     @GetMapping("/summertime")
     fun convertSummerTime(request: SummerTimeRequest): ResponseEntity<SummerTimeResponse> {
         log.info { "Converting time to summer time" }
-        return summerTimeService.convertSummerTime(
+        summerTimeService.convertSummerTime(
             request.continent,
             request.city,
             request.time
-        )
+        ).let {
+            return ResponseEntity.ok(SummerTimeResponse(it))
+        }
     }
 }
