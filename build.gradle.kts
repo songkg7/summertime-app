@@ -44,6 +44,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")

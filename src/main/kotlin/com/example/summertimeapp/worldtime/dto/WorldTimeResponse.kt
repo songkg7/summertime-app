@@ -2,6 +2,7 @@ package com.example.summertimeapp.worldtime.dto
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import java.io.Serializable
 import java.time.ZonedDateTime
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
@@ -21,4 +22,4 @@ data class WorldTimeResponse(
     val utcDatetime: ZonedDateTime,
     val utcOffset: String,
     val weekNumber: Int
-)
+) : Serializable
